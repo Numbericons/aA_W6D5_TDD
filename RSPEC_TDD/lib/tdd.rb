@@ -1,3 +1,4 @@
+require 'byebug'
 class Array
     def my_uniq
         ret_arr = []
@@ -44,9 +45,50 @@ class Array
     end
 end
 
+class Towers
+    attr_reader :height
+    attr_accessor :pile1, :pile2, :pile3
+    def initialize(height = 4)
+        @pile1 = []
+        @pile2 = []
+        @pile3 = []
+        @height = height
+        height.times { |num| @pile1 << num + 1 }
+    end
 
+    def move(start = nil, end_pos = nil)
+        if start.nil? || end_pos.nil?
+            input = gets.chomp.to_i 
+            start = input[0] 
+            end_pos = input[2]
+        end
+        piece_in_hand = nil
+        case start
+        when 1 
+            piece_in_hand = self.pile1.shift
+        when 2
+            piece_in_hand = self.pile2.shift
+        when 3
+            piece_in_hand = self.pile3.shift
+        end
 
-# stock_prices([56, 50, 69, 43, 52, 71, 39, 40]) # buy day 5 sell day 6 
-                                                 # indices [4,5] 
+        case end_pos
+        when 1 
+            self.pile1.unshift(piece_in_hand)
+        when 2
+            self.pile2.unshift(piece_in_hand)
+        when 3
+            self.pile3.unshift(piece_in_hand)
+        end
 
-# stock_prices([100, 15, 50, 10, 40, 60, 5]) #[3,5] for $50
+        game_over?
+    end
+
+    def play
+        move until game_over?
+    end
+
+    def game_over?
+        @pile1.empty? && (@pile2.length == self.height || @pile3.length == self.height)
+    end
+end
